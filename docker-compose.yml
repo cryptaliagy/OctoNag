@@ -1,0 +1,14 @@
+version: "3.0"
+
+services:
+
+  pr_reminders:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./startup.sh
+    volumes:
+      - .:/src
+    environment:
+      - GITHUB_API_TOKEN
+      - SLACK_API_TOKEN
