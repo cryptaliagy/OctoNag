@@ -29,9 +29,9 @@ GITHUB_REVIEW_LINK_TEMPLATE = \
 slack_headers = { 'Authorization': 'Bearer ' + SLACK_API_TOKEN }
 github_headers = { 'Authorization': 'Bearer ' + GITHUB_API_TOKEN }
 
-REVIEWED_PR_TEMPLATE = Template('Hi there! This is a reminder that your pull request $repo/$number ($url) has been reviewed but not approved.')
-REQUESTED_REVIEWER_TEMPLATE = Template('Hi there! This is a reminder that you are a requested reviewer on pull request $repo/$number ($url), which is still awaiting approval.')
-NO_REVIEWERS_TEMPLATE = Template('Hi there! This is a reminder that you haven\'t requested any reviewers on pull request $repo/$number ($url).')
+REVIEWED_PR_TEMPLATE = Template('Hi there! This is a reminder that *your pull request* $repo/$number ($url) has been reviewed but *not approved*.')
+REQUESTED_REVIEWER_TEMPLATE = Template('Hi there! This is a reminder that *you are a requested reviewer* on pull request $repo/$number ($url), which is still awaiting approval.')
+NO_REVIEWERS_TEMPLATE = Template('Hi there! This is a reminder that *you haven\'t requested any reviewers* on pull request $repo/$number ($url).')
 
 
 def fetch_repository_pulls(repository):
