@@ -1,11 +1,12 @@
 # wufoo_bot
 
-Required environment variables:
+Before using, edit the file `config.yaml` to set:
+- Slack API token
+- Github API token
+- Organization
+- (Optional) Repositories to watch
 
-- `SLACK_API_TOKEN`
-- `GITHUB_API_TOKEN`
-
-Run
+To run, type this into the CLI:
 ```
 docker-compose up pr_reminders
 ```
