@@ -6,7 +6,8 @@ setup(
     py_modules=['pr_reminders'],
     install_requires=[
         'requests==2.21.0',
-        'github3.py==1.0.0a4'
+        'github3.py==1.0.0a4',
+        'pyyaml==5.1.0'
     ],
     entry_points='''
         [console_scripts]

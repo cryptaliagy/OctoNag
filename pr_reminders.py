@@ -6,24 +6,41 @@ import json
 import requests
 from github3 import enterprise_login
 from string import Template
+from yaml import load
 
 
-# Read Environment Variables
-try:
-    SLACK_API_TOKEN = os.environ['SLACK_API_TOKEN']
-    GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
-except KeyError as error:
-    sys.stderr.write('Please set the environment variable {0}'.format(error))
+def get_config_from_file(config_file='config.yaml'):
+    """
+    Grabs the configuration from YAML file
+    """
+    with open(config_file, 'r') as f:
+        try:
+            config = load(f.read())
+        except Exception as e:
+            sys.stderr.write(e)
+            sys.stderr.write("Error reading configuration file {}".format(config_file))
+            config = None
+    return config
+
+        
+configurations = get_config_from_file()
+
+if configurations['slack_token'] is None \
+    or configurations['github_token'] is None:
+    sys.stderr.write('Please ensure that the github token and slack token are defined in the config file')
     sys.exit(1)
 
+SLACK_API_TOKEN = configurations['slack_token']
+GITHUB_API_TOKEN = configurations['github_token']
+GITHUB_URL = configurations['github_url']
+ORGANIZATION = configurations['organization']
+REPOSITORIES = configurations['repositories'] and set(configurations['repositories']) # Optional
 
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
 
-GITHUB_URL = 'http://code.corp.surveymonkey.com'
-ORGANIZATION = 'wufoo'
 GITHUB_REVIEW_LINK_TEMPLATE = \
-    Template('https://code.corp.surveymonkey.com/api/v3/repos/wufoo/$repo/pulls/$number/reviews')
+    Template('{0}/api/v3/repos/{1}/$repo/pulls/$number/reviews'.format(GITHUB_URL, ORGANIZATION))
 
 # Headers
 slack_headers = { 'Authorization': 'Bearer ' + SLACK_API_TOKEN }
@@ -51,7 +68,8 @@ def fetch_organization_pulls(organization_name):
 
     pulls = []
     for repository in organization.repositories():
-        pulls += fetch_repository_pulls(repository)
+        if not REPOSITORIES or repository.name in REPOSITORIES:
+            pulls += fetch_repository_pulls(repository)
 
     return pulls
 
