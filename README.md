@@ -1,6 +1,6 @@
-# wufoo_bot
+# OctoNag Bot
 
-Before using, edit the file `config.yaml` to set:
+Before using, make a copy of `config-example.yaml` named `config.yaml` and set:
 - Slack API token
 - Github API token
 - Organization
