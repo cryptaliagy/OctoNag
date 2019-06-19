@@ -35,6 +35,7 @@ GITHUB_API_TOKEN = configurations['github_token']
 GITHUB_URL = configurations['github_url']
 ORGANIZATION = configurations['organization']
 REPOSITORIES = configurations['repositories'] and set(configurations['repositories']) # Optional
+PERMIT_MESSAGE_TO_USERS = configurations['notifiable_users'] and set(configurations['notifiable_users'])
 
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
@@ -75,6 +76,8 @@ def fetch_organization_pulls(organization_name):
 
 
 def lookup_user(name):
+    if PERMIT_MESSAGE_TO_USERS and name not in PERMIT_MESSAGE_TO_USERS:
+        return None
     email = name + '@surveymonkey.com'
     params = {
         'email': email
@@ -98,7 +101,7 @@ def send_to_user(user_id, text):
 
 
 if __name__ == '__main__':
-    pulls = fetch_organization_pulls('wufoo')
+    pulls = fetch_organization_pulls(ORGANIZATION)
     for pull in pulls:
 
         user = pull.user.login
