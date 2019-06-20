@@ -1,16 +1,15 @@
 github_token: 
 slack_token:
 
-github_url: http://code.corp.surveymonkey.com
-organization: devmonkeys
-
-# List the repositories to be watched by the bot. If none are given, bot will watch all repositories
-repositories:
-   - enterpriseweb
-   - activitysvc
-   - enterprisesvc
-   - librarysvc
-
+repositories: 
+  devmonkeys:
+    - enterpriseweb
 
 # Restrict notifications to only be given to these users, or leave empty to notify any users
-notifiable_users:
+whitelist:
+
+# Prevent these users from being messaged. Overrides whitelist
+blacklist:
+
+
+manually_resolve_users:
