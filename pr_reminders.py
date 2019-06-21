@@ -124,8 +124,6 @@ if __name__ == '__main__':
                     text = fill_template(CHANGES_REQUESTED_TEMPLATE)
                     send_to_user(lookup_user(user), text)
                 elif state == 'APPROVED':
-                    if pull.labels and pull.labels.name.lower() == u'do not merge':
-                        continue
                     text = fill_template(APPROVED_NOT_MERGED_TEMPLATE)
                     send_to_user(lookup_user(user), text)
                 elif state != 'APPROVED':
