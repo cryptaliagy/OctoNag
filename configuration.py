@@ -1,7 +1,7 @@
 import sys
-from yaml import load
+import os
+from yaml import load, Loader
 from functools import wraps
-import pytest
 
 def get_config_from_file(config_file='config.yaml'):
     """
@@ -9,7 +9,7 @@ def get_config_from_file(config_file='config.yaml'):
     """
     with open(config_file, 'r') as f:
         try:
-            config = load(f.read())
+            config = load(f.read(), Loader=Loader)
         except Exception as e:
             sys.stderr.write(e)
             sys.stderr.write("Error reading configuration file {}".format(config_file))
@@ -20,16 +20,16 @@ def get_config_from_file(config_file='config.yaml'):
 class _config:
     def __init__(self):
         configs = get_config_from_file()
+        self.github_token = os.getenv('GITHUB_API_TOKEN')
+        self.slack_token = os.getenv('SLACK_API_TOKEN')
 
-        if configs['slack_token'] is None \
-            or configs['github_token'] is None:
+        if self.slack_token is None \
+            or self.github_token is None:
             sys.stderr.write('Please ensure that the github token and slack token are defined in the config file')
             sys.exit(1)
 
 
         self.map_users = configs['manually_resolve_users']
-        self.github_token = configs['github_token']
-        self.slack_token = configs['slack_token']
         self.repositories = configs['repositories']
         self.whitelist = configs['whitelist'] and set(configs['whitelist'])
         self.blacklist = configs['blacklist'] and set(configs['blacklist'])

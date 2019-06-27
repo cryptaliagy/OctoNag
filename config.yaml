@@ -1,15 +1,27 @@
-github_token: 
-slack_token:
-
 repositories: 
   devmonkeys:
     - enterpriseweb
+    - activitysvc
+    - enterprisesvc
+    - librarysvc
+  ACMe:
+    - ACMe
 
 # Restrict notifications to only be given to these users, or leave empty to notify any users
 whitelist:
+  - aarose
+  - alex
+  - hosseins
+  - nmaximo
+  - guldens
+  - saidm
+  - kes
 
 # Prevent these users from being messaged. Overrides whitelist
 blacklist:
+  - alex
 
 
 manually_resolve_users:
+  aarose: anarosap
+  alex: oleksiyf
