@@ -10,6 +10,7 @@ services:
     command: ./startup.sh
     volumes:
       - .:/src
+    user: ${CURRENT_UID}
     environment:
       - GITHUB_API_TOKEN
       - SLACK_API_TOKEN
