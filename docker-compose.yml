@@ -3,6 +3,7 @@ version: "3.0"
 services:
 
   octonag:
+    network_mode: bridge
     build:
       context: .
       dockerfile: Dockerfile
