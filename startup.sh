@@ -1,4 +1,4 @@
 #!/bin/sh
 
-pip install -e .
+pip install --user -e .
 python ./pr_reminders.py
