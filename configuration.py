@@ -37,6 +37,7 @@ class _config:
 
 Configuration = _config()
 organizations = Configuration.repositories.keys()
+blocked = set()
 
 def restrict(list_type):
     def restricting_decorator(func):
@@ -48,12 +49,16 @@ def restrict(list_type):
                 collection = Configuration.whitelist
             else:
                 collection = None
+
+            if name in blocked:
+                return None  # Block quietly after first verbose block
             
             if collection and ((list_type == 'whitelist') ^ (name in collection)):
                 print 'User %s %s in %s, blocking lookup' % (name, 'not' if list_type=='whitelist' else '', list_type)
+                blocked.add(name)
                 return None
-            else:
-                return func(name, *args, **kwargs)
+                
+            return func(name, *args, **kwargs)
 
         return wrapper
     return restricting_decorator

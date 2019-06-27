@@ -20,6 +20,7 @@ APPROVED_NOT_MERGED_TEMPLATE = Template('Hi there! This is a reminder that your 
 CHANGES_REQUESTED_TEMPLATE = Template('Hi there! This is a reminder that *your pull request* $repo/$number ($url) has had *changes requested* to it.')
 
 user_cache = {}
+message_recipients = []
 
 
 def fetch_repository_pulls(repository):
@@ -57,7 +58,7 @@ def lookup_user(name):
     print ('Searching for %s...' % name)
     # Search only once for each user ID
     if name in user_cache:
-        print('Found cached user %s with email %s' % (name, user_cache[name]['email'])
+        print('Found cached user %s with email %s' % (name, user_cache[name]['email']))
         return user_cache[name]['id']
     else:
         email = name + '@surveymonkey.com'
@@ -71,6 +72,7 @@ def lookup_user(name):
         response = json.loads(r.text)
         if response['ok']:
             user_cache[name] = { 'id': response['user']['id'], 'email': email }
+            user_cache[response['user']['id']] = { 'name': name, 'email': email }
             print('Slack user with email %s found' % email)
             return response['user']['id']
         else:
@@ -79,12 +81,16 @@ def lookup_user(name):
             return None
 
 def send_to_user(user_id, text):
-    return None
+    if user_id is None:
+        return
+    print("Sending message to %s..." % user_cache[user_id]['name'])
     params = {
         'channel': user_id,
         'text': text
     }
     r = requests.post(POST_MESSAGE_URL, headers=get_header('Slack'), params=params)
+
+    message_recipients.append(user_cache[user_id]['name'])
 
 
 def get_header(service):
@@ -125,9 +131,6 @@ if __name__ == '__main__':
                     text = fill_template(CHANGES_REQUESTED_TEMPLATE)
                     send_to_user(user_id, text)
                 elif state == 'APPROVED' and user_id is not None:
-                    # if pull.labels and reduce(lambda acc, curr: acc or curr.name.lower() == u'do not merge', pull.labels, False):
-                    #     print 'PR #%d with title %s has do not merge label' % (number, pull.title)
-                    #     continue
                     text = fill_template(APPROVED_NOT_MERGED_TEMPLATE)
                     send_to_user(lookup_user(user), text)
                 elif state != 'APPROVED':
@@ -150,3 +153,8 @@ if __name__ == '__main__':
                 if len(assigned_ids) == 0 and len(requested_ids) == 0:
                     text = fill_template(NO_REVIEWERS_TEMPLATE)
                     send_to_user(lookup_user(user), text)
+    
+    unique_nags = set(message_recipients)
+    print('OctoNag has finished nagging for the day!')
+    print('Sent %d nags to a total of %d people' % (len(message_recipients), len(unique_nags)))
+    print('Nagged people: %s' % list(unique_nags))
