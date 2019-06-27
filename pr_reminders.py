@@ -62,8 +62,7 @@ def lookup_user(name):
         return user_cache[name]['id']
     else:
         email = name + '@surveymonkey.com'
-
-    email = 'nmaximo@surveymonkey.com'  # Temporary test override
+        
     params = {
         'email': email
     }
