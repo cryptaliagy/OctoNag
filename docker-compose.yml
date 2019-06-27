@@ -7,10 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ./startup.sh
-    volumes:
-      - .:/src
-    user: ${CURRENT_UID}
+    command: python pr_reminders.py
     environment:
       - GITHUB_API_TOKEN
       - SLACK_API_TOKEN
