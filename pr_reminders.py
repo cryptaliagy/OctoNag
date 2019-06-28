@@ -63,8 +63,6 @@ def lookup_user(name):
     else:
         email = name + '@surveymonkey.com'
 
-    email = 'nmaximo@surveymonkey.com'
-
     params = {
         'email': email
     }
