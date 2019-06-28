@@ -13,7 +13,7 @@ def get_config_from_file(config_file='config.yaml'):
         except Exception as e:
             sys.stderr.write(e)
             sys.stderr.write("Error reading configuration file {}".format(config_file))
-            config = None
+            sys.exit(1)
     return config
 
 
@@ -38,6 +38,7 @@ class _config:
 Configuration = _config()
 organizations = Configuration.repositories.keys()
 blocked = set()
+mapped = set()
 
 def restrict(list_type):
     def restricting_decorator(func):
@@ -54,10 +55,10 @@ def restrict(list_type):
                 return None  # Block quietly after first verbose block
             
             if collection and ((list_type == 'whitelist') ^ (name in collection)):
-                print 'User %s %s in %s, blocking lookup' % (name, 'not' if list_type=='whitelist' else '', list_type)
+                print('User %s %s in %s, blocking lookup' % (name, 'not' if list_type=='whitelist' else '', list_type))
                 blocked.add(name)
                 return None
-                
+
             return func(name, *args, **kwargs)
 
         return wrapper
@@ -88,9 +89,12 @@ def repositories(func):
 def manually_resolve(func):
     @wraps(func)
     def wrapper(name, *args, **kwargs):
-        if Configuration.map_users and name in Configuration.map_users:
-            print '%s in manual mapping configuration, doing lookup on %s' % (name, Configuration.map_users[name])
+        if name in mapped:
             return func(Configuration.map_users[name], *args, **kwargs)
-        else:
-            return func(name, *args, **kwargs)
+            
+        if Configuration.map_users and name in Configuration.map_users:
+            print('%s in manual mapping configuration, doing lookup on %s' % (name, Configuration.map_users[name]))
+            mapped.add(name)
+            return func(Configuration.map_users[name], *args, **kwargs)
+        return func(name, *args, **kwargs)
     return wrapper
