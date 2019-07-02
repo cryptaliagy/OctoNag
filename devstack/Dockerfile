@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 
-COPY . /src
+COPY . /code
 
-WORKDIR /src
+WORKDIR /code
 
-RUN pip install -e .
+RUN pip install -e src/
