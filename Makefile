@@ -10,8 +10,16 @@ run:
 		-f devstack/docker-compose.yml \
 		run --rm octonag
 
-.PHONY: break
-break:
+.PHONY: teardown
+teardown:
 	docker-compose \
 		-f devstack/docker-compose.yml \
 		down --rmi all
+
+.PHONY: rebuild
+rebuild:
+	make teardown && make build
+
+.PHONY: activate
+activate:
+	make teardown ; (make build && make run) ; make teardown
