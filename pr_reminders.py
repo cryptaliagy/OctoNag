@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.7
 
 import os
 import sys
@@ -7,6 +7,7 @@ import requests
 from github3 import enterprise_login
 from string import Template
 from configuration import restrict, with_token, repositories, manually_resolve, organizations
+from functools import reduce
 
 github_url = 'http://code.corp.surveymonkey.com'
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
@@ -21,6 +22,7 @@ CHANGES_REQUESTED_TEMPLATE = Template('Hi there! This is a reminder that *your p
 
 user_cache = {}
 message_recipients = []
+found = set()
 
 
 def fetch_repository_pulls(repository):
@@ -55,10 +57,13 @@ def fetch_organization_pulls(organization_name, _token, _repositories):
 @restrict('whitelist')
 @manually_resolve
 def lookup_user(name):
+    if name in found:
+        return user_cache[name]['id']
     print ('Searching for %s...' % name)
     # Search only once for each user ID
     if name in user_cache:
         print('Found cached user %s with email %s' % (name, user_cache[name]['email']))
+        found.add(name)
         return user_cache[name]['id']
     else:
         email = name + '@surveymonkey.com'
@@ -153,7 +158,7 @@ if __name__ == '__main__':
                     text = fill_template(NO_REVIEWERS_TEMPLATE)
                     send_to_user(lookup_user(user), text)
     
-    unique_nags = set(message_recipients)
+    unique_nags = {*message_recipients}
     print('OctoNag has finished nagging for the day!')
     print('Sent %d nags to a total of %d people' % (len(message_recipients), len(unique_nags)))
-    print('Nagged people: %s' % list(unique_nags))
+    print('Nagged people:', *unique_nags)
