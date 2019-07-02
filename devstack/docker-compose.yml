@@ -5,8 +5,8 @@ services:
   octonag:
     network_mode: bridge
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: devstack/Dockerfile
     command: python pr_reminders.py
     environment:
       - GITHUB_API_TOKEN

@@ -3,7 +3,7 @@ import os
 from yaml import load, Loader
 from functools import wraps
 
-def get_config_from_file(config_file='config.yaml'):
+def get_config_from_file(config_file='conf/config.yaml'):
     """
     Grabs the configuration from YAML file
     """
