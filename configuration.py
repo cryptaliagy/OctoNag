@@ -31,8 +31,8 @@ class _config:
 
         self.map_users = configs['manually_resolve_users']
         self.repositories = configs['repositories']
-        self.whitelist = configs['whitelist'] and set(configs['whitelist'])
-        self.blacklist = configs['blacklist'] and set(configs['blacklist'])
+        self.whitelist = configs['whitelist'] and {*configs['whitelist']}
+        self.blacklist = configs['blacklist'] and {*configs['blacklist']}
 
 
 Configuration = _config()
