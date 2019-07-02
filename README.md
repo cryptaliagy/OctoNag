@@ -25,11 +25,11 @@
 ```
 3. Install the OctoNag
 ```bash
-    pip install -e .
+    pip install -e src/
 ```
 You can now run the OctoNag by using:
 ```bash
-    python pr_reminders.py
+    python src/pr_reminders.py
 ```
 
 ## Setup Locally Using Docker
