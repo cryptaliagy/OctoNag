@@ -18,7 +18,6 @@ whitelist:
 
 # Prevent these users from being messaged. Overrides whitelist
 blacklist:
-  - alex
 
 
 manually_resolve_users:
