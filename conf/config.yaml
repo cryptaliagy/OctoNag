@@ -1,15 +1,27 @@
-# Entries are of the form
-# Organization:
-#   - Repository
-repositories:
+repositories: 
+  devmonkeys:
+    - enterpriseweb
+    - activitysvc
+    - enterprisesvc
+    - librarysvc
+  ACMe:
+    - ACMe
 
-# Restrict notifications to only be given to these Github users, or leave empty to notify any users
+# Restrict notifications to only be given to these users, or leave empty to notify any users
 whitelist:
+  - alex
+  - hosseins
+  - nmaximo
+  - guldens
+  - saidm
+  - kes
 
 # Prevent these users from being messaged. Overrides whitelist
 blacklist:
 
-# For anyone whose Github username does not match their work email
+
 manually_resolve_users:
+  aarose: anarosap
+  alex: oleksiyf
 
 use_jira: False
