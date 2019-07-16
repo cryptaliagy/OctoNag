@@ -143,16 +143,17 @@ if __name__ == '__main__':
                         send_to_user(user_id, text)
                     text = fill_template(REVIEWED_PR_TEMPLATE)
                     send_to_user(lookup_user(user), text)
-            else:
-                if len(requested_ids) > 0:
-                    text = fill_template(REQUESTED_REVIEWER_TEMPLATE)
-                    for user_id in requested_ids:
-                        send_to_user(user_id, text)
-                
+            else:                
                 if len(assigned_ids) > 0:
                     text = fill_template(REQUESTED_ASSIGNEE_TEMPLATE)
                     for user_id in assigned_ids:
                         send_to_user(user_id, text)
+
+                if len(requested_ids) > 0:
+                    text = fill_template(REQUESTED_REVIEWER_TEMPLATE)
+                    for user_id in requested_ids:
+                        if user_id not in assigned_ids:  # Prevent duplicate messages
+                            send_to_user(user_id, text)
 
                 if len(assigned_ids) == 0 and len(requested_ids) == 0:
                     text = fill_template(NO_REVIEWERS_TEMPLATE)
