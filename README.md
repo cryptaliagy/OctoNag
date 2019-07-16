@@ -46,4 +46,4 @@ make activate   # Tears down image if existing, builds it, runs, then cleans up
 ```
 
 ## Setting Up Automation
-The OctoNag was designed so that it could be automated by TeamCity, though other forms of automation are easy to make. If you do not want to handle your own automation process but would rather have the current TeamCity build do it for you, simply create a branch from Master with your team's name and write your configuration file! Every morning at 8 am, OctoNag will run and notify the required parties about actions that must be taken on a pull request.
+The OctoNag was designed so that it could be automated by TeamCity, though other forms of automation are easy to make. Information on setting up TeamCity automation can be found in the [docs](/docs/Automation.md)
