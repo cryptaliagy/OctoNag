@@ -6,7 +6,6 @@ repositories:
 # Restrict notifications to only be given to these Github users, or leave empty to notify any users
 whitelist:
 
-
 # Prevent these users from being messaged. Overrides whitelist
 blacklist:
 

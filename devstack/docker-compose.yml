@@ -11,3 +11,5 @@ services:
     environment:
       - GITHUB_API_TOKEN
       - SLACK_API_TOKEN
+      - JIRA_PASS
+      - JIRA_USER

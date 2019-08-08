@@ -1,15 +1,16 @@
 #!/usr/bin/env python3.7
 
-import os
-import sys
+from jira import JIRA
+from jira.exceptions import JIRAError
 import json
 import requests
 from github3 import enterprise_login
 from string import Template
-from configuration import restrict, with_token, repositories, manually_resolve, organizations
+from configuration import restrict, with_credentials, with_token, repositories, manually_resolve, organizations
 from functools import reduce
 
 github_url = 'http://code.corp.surveymonkey.com'
+jira_url = 'https://jira.surveymonkey.com'
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
 
@@ -23,6 +24,31 @@ CHANGES_REQUESTED_TEMPLATE = Template('Hi there! This is a reminder that *your p
 user_cache = {}
 message_recipients = []
 found = set()
+
+
+@with_credentials(service='Jira')
+def jira_issue_in_review(issue_id, _usr, _pwd):
+    if _usr is None or _pwd is None:
+        print('Jira username or password unset.')
+        return None
+    jira = None
+    try:
+        jira = JIRA(
+            jira_url,
+            auth=(_usr, _pwd)
+        )
+        issue = jira.issue(issue_id)
+        if str(issue.fields.status) == 'Review':
+            return True
+        else:
+            return False
+    except JIRAError:
+        if jira is None:
+            print('Could not connect to Jira.')
+        else:
+            print('Could not check Jira ticket status on %s.' % issue_id)
+        return None
+
 
 
 def fetch_repository_pulls(repository):
@@ -59,7 +85,7 @@ def fetch_organization_pulls(organization_name, _token, _repositories):
 def lookup_user(name):
     if name in found:
         return user_cache[name]['id']
-    print ('Searching for %s...' % name)
+    print('Searching for %s...' % name)
     # Search only once for each user ID
     if name in user_cache:
         print('Found cached user %s with email %s' % (name, user_cache[name]['email']))
@@ -108,6 +134,8 @@ def get_header(service):
 if __name__ == '__main__':
     for organization in organizations:
         pulls, review_link_template = fetch_organization_pulls(organization) # Token and repo list populated by decorators
+        pulls = [pull for pull in pulls if jira_issue_in_review(pull.head.label.rsplit(':')[1])
+                 or jira_issue_in_review(pull.head.label.rsplit(':')[1]) is None]
         for pull in pulls:
             user = pull.user.login
             url = pull.html_url
@@ -126,7 +154,7 @@ if __name__ == '__main__':
             reviews = json.loads(r.text)
 
             fill_template = lambda template: template.substitute(repo=repo, number=number, url=url)
-            
+
             if len(reviews) >= 1:
                 state = \
                     reduce(lambda acc, nxt: acc if nxt['state'] not in ['CHANGES_REQUESTED', 'APPROVED'] else nxt['state'], reviews, reviews[0]['state'])

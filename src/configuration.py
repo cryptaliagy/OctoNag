@@ -22,12 +22,13 @@ class _config:
         configs = get_config_from_file()
         self.github_token = os.getenv('GITHUB_API_TOKEN')
         self.slack_token = os.getenv('SLACK_API_TOKEN')
+        self.jira_user = os.getenv('JIRA_USER')
+        self.jira_pass = os.getenv('JIRA_PASS')
 
         if self.slack_token is None \
             or self.github_token is None:
             sys.stderr.write('Please ensure that the github token and slack token are defined in the config file')
             sys.exit(1)
-
 
         self.map_users = configs['manually_resolve_users']
         self.repositories = configs['repositories']
@@ -63,6 +64,20 @@ def restrict(list_type):
 
         return wrapper
     return restricting_decorator
+
+def with_credentials(service='Jira'):
+    def use_credentials(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if service == 'Jira':
+                usr = Configuration.jira_user
+                pwd = Configuration.jira_pass
+            new_kwargs = kwargs.copy()
+            new_kwargs['_usr'] = usr
+            new_kwargs['_pwd'] = pwd
+            return func(*args, **new_kwargs)
+        return wrapper
+    return use_credentials
 
 def with_token(service='Github'):
     def use_token(func):

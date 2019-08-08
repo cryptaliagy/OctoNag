@@ -5,6 +5,7 @@ setup(
     name='slack-pull-reminders',
     py_modules=['pr_reminders'],
     install_requires=[
+        'jira==2.0.0',
         'requests==2.21.0',
         'github3.py==1.0.0a4',
         'pyyaml==5.1.0'
