@@ -5,3 +5,5 @@ COPY . /code
 WORKDIR /code
 
 RUN pip install .
+
+CMD octonag
