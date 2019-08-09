@@ -1,5 +1,11 @@
 # OctoNag Bot
 
+## Build Status
+<a href="https://teamcity.corp.surveymonkey.com/viewType.html?buildTypeId=OctoNag_BranchStatus&guest=1">
+<img src="https://teamcity.corp.surveymonkey.com/app/rest/builds/buildType:OctoNag_BranchStatus/statusIcon"/>
+</a>
+
+
 ## Quickjump
 1. [Configuration](#configuration)
 1. [Setup Locally Using Virtual Environment](#setup-locally-using-virtual-environment)
