@@ -28,4 +28,4 @@ activate:
 test:
 	docker-compose \
 		-f devstack/docker-compose.yml \
-		run --rm flake8
+		run octonag bash -c "flake8"
