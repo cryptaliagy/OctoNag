@@ -140,7 +140,7 @@ def main():
         for pull_request in pull_requests:
             if use_jira:
                 review_status = in_review(pull_request['branch'])
-                if review_status:
+                if review_status is False:  # Don't skip if returns None
                     continue
             targets = process(pull_request)
             msg_queue.extend(targets)
