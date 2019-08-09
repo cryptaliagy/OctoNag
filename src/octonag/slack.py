@@ -1,9 +1,9 @@
 import requests
 import json
-from configuration import restrict
-from configuration import get_header
-from configuration import manually_resolve
-# from configuration import debug
+from .configuration import restrict
+from .configuration import get_header
+from .configuration import manually_resolve
+from .configuration import debug
 
 user_cache = {}
 found = set()  # Used to silence lookups after the first time
@@ -53,7 +53,7 @@ def lookup_user(login, user_email='', name=''):
             return None
 
 
-# @debug
+@debug
 def msg_user(user_id, text):
     if user_id is None:
         return

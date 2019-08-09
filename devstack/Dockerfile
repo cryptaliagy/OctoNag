@@ -4,4 +4,4 @@ COPY . /code
 
 WORKDIR /code
 
-RUN pip install -e src/
+RUN pip install .

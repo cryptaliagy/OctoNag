@@ -23,8 +23,9 @@ class _config:
         configs = get_config_from_file()
         self.github_token = os.getenv('GITHUB_API_TOKEN')
         self.slack_token = os.getenv('SLACK_API_TOKEN')
-        self.jira_user = os.getenv('JIRA_USER')
-        self.jira_pass = os.getenv('JIRA_PASS')
+        if configs['use_jira']:
+            self.jira_user = os.getenv('JIRA_USER')
+            self.jira_pass = os.getenv('JIRA_PASS')
 
         if (self.slack_token is None or self.github_token is None):
             sys.stderr.write('Please ensure that the github token and '

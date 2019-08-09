@@ -1,14 +1,14 @@
-from queries import build_query
-from queries import run_query
-from messages import greet
-from messages import was_assigned
-from messages import review_made
-from messages import GOODBYE_MSG as goodbye
-from slack import lookup_user
-from slack import msg_user
-from slack import get_name_from_id
-from jira_status import in_review
-from configuration import use_jira
+from .queries import build_query
+from .queries import run_query
+from .messages import greet
+from .messages import was_assigned
+from .messages import review_made
+from .messages import GOODBYE_MSG as goodbye
+from .slack import lookup_user
+from .slack import msg_user
+from .slack import get_name_from_id
+from .jira_status import in_review
+from .configuration import use_jira
 from collections import deque
 from pprint import pprint
 from functools import partial
@@ -138,9 +138,10 @@ def main():
     for key in result:
         pull_requests = result[key]['pullRequests']['nodes']
         for pull_request in pull_requests:
-            review_status = in_review(pull_request['branch'])
-            if use_jira and not review_status:
-                continue
+            if use_jira:
+                review_status = in_review(pull_request['branch'])
+                if review_status:
+                    continue
             targets = process(pull_request)
             msg_queue.extend(targets)
 

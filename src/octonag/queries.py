@@ -1,7 +1,7 @@
 import requests
-from configuration import repository_generator
-from configuration import with_token
-from configuration import github_graphql as url
+from .configuration import repository_generator
+from .configuration import with_token
+from .configuration import github_graphql as url
 
 
 def get_base_query_from_file(file):
