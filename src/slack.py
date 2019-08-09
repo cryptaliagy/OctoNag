@@ -3,13 +3,13 @@ import json
 from configuration import restrict
 from configuration import get_header
 from configuration import manually_resolve
-from configuration import debug
-from queue import SimpleQueue as queue
+# from configuration import debug
 
 user_cache = {}
 found = set()  # Used to silence lookups after the first time
 POST_MESSAGE_URL = 'https://slack.com/api/chat.postMessage'
 LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
+
 
 @restrict('blacklist')
 @restrict('whitelist')
@@ -17,7 +17,7 @@ LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
 def lookup_user(login, user_email='', name=''):
     if login in found:
         return user_cache[login]['id']
-    print ('Searching for %s...' % login)
+    print('Searching for %s...' % login)
     # Search only once for each user ID
     if login in user_cache:
         print('Found cached user %s with email %s' % (login, user_cache[login]['email']))
@@ -35,8 +35,16 @@ def lookup_user(login, user_email='', name=''):
     if r.status_code == 200:
         response = json.loads(r.text)
         if response['ok']:
-            user_cache[login] = { 'id': response['user']['id'], 'email': email, 'name': name }
-            user_cache[response['user']['id']] = { 'login': login, 'email': email, 'name': name }
+            if name:
+                logged_name = name
+            else:
+                logged_name = response['user']['profile']['display_name']
+            user_cache[login] = {'id': response['user']['id'], 'email': email, 'name': logged_name}
+            user_cache[response['user']['id']] = {
+                'login': login,
+                'email': email,
+                'name': logged_name
+            }
             print('Slack user with email %s found' % email)
             return response['user']['id']
         else:
@@ -44,7 +52,8 @@ def lookup_user(login, user_email='', name=''):
             print('Error: %s' % response['error'])
             return None
 
-#@debug
+
+# @debug
 def msg_user(user_id, text):
     if user_id is None:
         return
@@ -57,8 +66,8 @@ def msg_user(user_id, text):
         'channel': user_id,
         'text': text
     }
-    r = requests.post(POST_MESSAGE_URL, headers=get_header('Slack'), params=params)
-    
+    requests.post(POST_MESSAGE_URL, headers=get_header('Slack'), params=params)
+
 
 def get_name_from_id(uid):
     name = user_cache[uid]['name']

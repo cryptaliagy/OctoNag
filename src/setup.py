@@ -12,6 +12,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        pr_reminders=pr_reminders:cli
+        octonag=octonagv2:main
     '''
 )

@@ -11,14 +11,14 @@
           email
         }}
       }}
-      assignees(first: 10) {{
+      assignees(first: 100) {{
         nodes {{
           login
           name
           email
         }}
       }}
-      reviewRequests(first: 10) {{
+      reviewRequests(first: 100) {{
         nodes {{
           requestedReviewer {{
             ... on User {{

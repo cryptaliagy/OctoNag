@@ -1,5 +1,3 @@
-import os
-import requests
 from queries import build_query
 from queries import run_query
 from messages import greet
@@ -10,6 +8,7 @@ from slack import lookup_user
 from slack import msg_user
 from slack import get_name_from_id
 from jira_status import in_review
+from configuration import use_jira
 from collections import deque
 from pprint import pprint
 from functools import partial
@@ -18,7 +17,7 @@ from functools import reduce
 
 def process(pr_data):
     '''
-    Returns a list of tuples containing a set of targets and a message 
+    Returns a list of tuples containing a set of targets and a message
     for the targets
     '''
 
@@ -53,20 +52,19 @@ def process(pr_data):
             result.append((target, msg))
         elif state == 'APPROVED' and author_id is not None:
             target = {author_id}
-            msg = reviewed(has_reviewers_assigned=True, approved=True)       
+            msg = reviewed(has_reviewers_assigned=True, approved=True)
             result.append((target, msg))
         elif state != 'APPROVED':
             if len(assignee_ids) > 0:
                 assigned_msg = assigned()
                 result.append((assignee_ids, assigned_msg))
-            
-            
+
             requested_target = reviewer_ids - assignee_ids
-            
+
             if len(requested_target) > 0:
                 requested_msg = assigned(review_request=True)
                 result.append((requested_target, requested_msg))
-    else:                
+    else:
         if len(assignee_ids) > 0:
             msg = assigned()
             result.append((assignee_ids, msg))
@@ -80,7 +78,7 @@ def process(pr_data):
             target = {author_id}
             msg = reviewed(has_reviewers_assigned=False)
             result.append((target, msg))
-    
+
     return result
 
 
@@ -119,12 +117,12 @@ def msg_all_enqueued(msg_queue):
                 messaged.add(target)
             msg_user(target, message)
             total += 1
-        
+
     for user in messaged:
         msg_user(user, goodbye)
-    
+
     return messaged, total
-            
+
 
 def main():
     msg_queue = deque()
@@ -145,12 +143,12 @@ def main():
                 continue
             targets = process(pull_request)
             msg_queue.extend(targets)
-    
+
     unique_nags, total_nags = msg_all_enqueued(msg_queue)
     print('OctoNag has finished nagging for the day!')
     print('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))
     print('Nagged people:', *map(get_name_from_id, unique_nags))
-    
+
 
 if __name__ == "__main__":
     main()

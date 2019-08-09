@@ -3,6 +3,7 @@ import os
 from yaml import load, Loader
 from functools import wraps
 
+
 def get_config_from_file(config_file='conf/config.yaml'):
     """
     Grabs the configuration from YAML file
@@ -25,9 +26,9 @@ class _config:
         self.jira_user = os.getenv('JIRA_USER')
         self.jira_pass = os.getenv('JIRA_PASS')
 
-        if self.slack_token is None \
-            or self.github_token is None:
-            sys.stderr.write('Please ensure that the github token and slack token are defined in the config file')
+        if (self.slack_token is None or self.github_token is None):
+            sys.stderr.write('Please ensure that the github token and '
+                             'slack token are defined in the config file')
             sys.exit(1)
 
         self.map_users = configs['manually_resolve_users']
@@ -43,13 +44,15 @@ github_url = 'https://code.corp.surveymonkey.com'
 github_graphql = f'{github_url}/api/graphql'
 blocked = set()
 mapped = set()
+use_jira = Configuration.use_jira
+
 
 def repository_generator(repos=None):
     if repos is None:
         repositories = Configuration.repositories
     else:
         repositories = repos
-    
+
     for owner in repositories:
         for repository in repositories[owner]:
             yield owner, repository
@@ -68,9 +71,10 @@ def restrict(list_type):
 
             if name in blocked:
                 return None  # Block quietly after first verbose block
-            
+
             if collection and ((list_type == 'whitelist') ^ (name in collection)):
-                print('User %s %s in %s, blocking lookup' % (name, 'not' if list_type=='whitelist' else '', list_type))
+                modifier_word = 'not' if list_type == 'whitelist' else ''
+                print('User %s %s in %s, blocking lookup' % (name, modifier_word, list_type))
                 blocked.add(name)
                 return None
 
@@ -78,6 +82,7 @@ def restrict(list_type):
 
         return wrapper
     return restricting_decorator
+
 
 def with_credentials(service='Jira'):
     def use_credentials(func):
@@ -93,10 +98,11 @@ def with_credentials(service='Jira'):
         return wrapper
     return use_credentials
 
+
 def with_token(service='Github'):
     def use_token(func):
         @wraps(func)
-        def wrapper(*args, **kwargs): 
+        def wrapper(*args, **kwargs):
             if service == 'Github':
                 token = Configuration.github_token
             else:
@@ -107,6 +113,7 @@ def with_token(service='Github'):
         return wrapper
     return use_token
 
+
 def repositories(func):
     @wraps(func)
     def wrapper(organization, *args, **kwargs):
@@ -114,17 +121,19 @@ def repositories(func):
         new_kwargs['_repositories'] = Configuration.repositories[organization]
         return func(organization, *args, **new_kwargs)
     return wrapper
-    
+
+
 def manually_resolve(func):
     @wraps(func)
     def wrapper(name, *args, **kwargs):
         if name in mapped:
             return func(Configuration.map_users[name], *args, **kwargs)
-            
+
         if Configuration.map_users and name in Configuration.map_users:
-            print('%s in manual mapping configuration, doing lookup on %s' % (name, Configuration.map_users[name]))
+            mapped_name = Configuration.map_users[name]
+            print(f'{name} in manual mapping configuration, doing lookup on {mapped_name}')
             mapped.add(name)
-            return func(Configuration.map_users[name], *args, **kwargs)
+            return func(mapped_name, *args, **kwargs)
         return func(name, *args, **kwargs)
     return wrapper
 
@@ -132,8 +141,8 @@ def manually_resolve(func):
 def get_header(service):
     @with_token(service)
     def make_header(_token=None):
-        return { 'Authorization': 'Bearer ' + _token }
-    
+        return {'Authorization': f'Bearer {_token}'}
+
     return make_header()
 
 

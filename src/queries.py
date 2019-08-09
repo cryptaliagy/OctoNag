@@ -7,7 +7,7 @@ from configuration import github_graphql as url
 def get_base_query_from_file(file):
     with open(file, 'r') as f:
         data = f.read()
-    
+
     return data
 
 
@@ -15,7 +15,7 @@ def build_query(repositories=None, base_query=get_base_query_from_file('conf/bas
     query = "{"
     for owner, repository in repository_generator(repositories):
         query += base_query.format(org=owner, repo=repository)
-    
+
     query += "}"
     return query
 
