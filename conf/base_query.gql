@@ -1,0 +1,40 @@
+{repo}Repo:repository(owner: "{org}", name: "{repo}") {{
+  pullRequests(last: 100, states: OPEN) {{
+    nodes {{
+      number
+      title
+      url
+      author {{
+        ... on User {{
+          login
+          name
+          email
+        }}
+      }}
+      assignees(first: 10) {{
+        nodes {{
+          login
+          name
+          email
+        }}
+      }}
+      reviewRequests(first: 10) {{
+        nodes {{
+          requestedReviewer {{
+            ... on User {{
+              login
+              name
+              email
+            }}
+          }}
+        }}
+      }}
+      reviews(last: 100, states: [CHANGES_REQUESTED, APPROVED]) {{
+        nodes {{
+          state
+        }}
+      }}
+      branch:headRefName
+    }}
+  }}
+}}

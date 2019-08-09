@@ -7,7 +7,7 @@ services:
     build:
       context: ..
       dockerfile: devstack/Dockerfile
-    command: python src/pr_reminders.py
+    command: python src/octonagv2.py
     environment:
       - GITHUB_API_TOKEN
       - SLACK_API_TOKEN

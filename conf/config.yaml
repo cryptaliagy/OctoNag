@@ -11,3 +11,5 @@ blacklist:
 
 # For anyone whose Github username does not match their work email
 manually_resolve_users:
+
+use_jira: False

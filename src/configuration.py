@@ -34,12 +34,26 @@ class _config:
         self.repositories = configs['repositories']
         self.whitelist = configs['whitelist'] and {*configs['whitelist']}
         self.blacklist = configs['blacklist'] and {*configs['blacklist']}
+        self.use_jira = configs['use_jira']
 
 
 Configuration = _config()
 organizations = Configuration.repositories.keys()
+github_url = 'https://code.corp.surveymonkey.com'
+github_graphql = f'{github_url}/api/graphql'
 blocked = set()
 mapped = set()
+
+def repository_generator(repos=None):
+    if repos is None:
+        repositories = Configuration.repositories
+    else:
+        repositories = repos
+    
+    for owner in repositories:
+        for repository in repositories[owner]:
+            yield owner, repository
+
 
 def restrict(list_type):
     def restricting_decorator(func):
@@ -112,4 +126,19 @@ def manually_resolve(func):
             mapped.add(name)
             return func(Configuration.map_users[name], *args, **kwargs)
         return func(name, *args, **kwargs)
+    return wrapper
+
+
+def get_header(service):
+    @with_token(service)
+    def make_header(_token=None):
+        return { 'Authorization': 'Bearer ' + _token }
+    
+    return make_header()
+
+
+def debug(func):
+    @wraps(func)
+    def wrapper(uid, *args, **kwargs):
+        return func('UJJJKJZEF', *args, **kwargs)
     return wrapper
