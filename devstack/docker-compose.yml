@@ -1,13 +1,12 @@
 version: "3.0"
 
 services:
-
   octonag:
     network_mode: bridge
     build:
       context: ..
       dockerfile: devstack/Dockerfile
-    command: octonag
+    image: octonag
     environment:
       - GITHUB_API_TOKEN
       - SLACK_API_TOKEN

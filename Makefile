@@ -23,3 +23,9 @@ rebuild:
 .PHONY: activate
 activate:
 	make teardown ; (make build && make run) ; make teardown
+
+.PHONY: test
+test:
+	docker-compose \
+		-f devstack/docker-compose.yml \
+		run octonag bash -c "flake8"
