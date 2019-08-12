@@ -6,6 +6,9 @@ repositories:
     - librarysvc
   ACMe:
     - ACMe
+  QA:
+    - WebRequestTest
+    - smlib.frontreq
 
 # Restrict notifications to only be given to these users, or leave empty to notify any users
 whitelist:
