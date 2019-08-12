@@ -35,7 +35,6 @@ def lookup_user(login, user_email='', name=''):
     if r.status_code == 200:
         response = json.loads(r.text)
         if response['ok']:
-            breakpoint()
             if name:
                 logged_name = name
             else:

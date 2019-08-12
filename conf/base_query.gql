@@ -1,4 +1,4 @@
-{repo}Repo:repository(owner: "{org}", name: "{repo}") {{
+{name}Repo:repository(owner: "{org}", name: "{repo}") {{
   pullRequests(last: 100, states: OPEN) {{
     nodes {{
       number

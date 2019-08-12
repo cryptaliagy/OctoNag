@@ -129,7 +129,7 @@ def main():
     query = build_query()
     result = run_query(query)
 
-    if 'error' in result:
+    if 'errors' in result:
         pprint(result)
         raise Exception('Something went wrong with the query')
 

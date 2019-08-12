@@ -14,7 +14,7 @@ def get_base_query_from_file(file):
 def build_query(repositories=None, base_query=get_base_query_from_file('conf/base_query.gql')):
     query = "{"
     for owner, repository in repository_generator(repositories):
-        query += base_query.format(org=owner, repo=repository)
+        query += base_query.format(name=repository.replace('.', ''), org=owner, repo=repository)
 
     query += "}"
     return query
