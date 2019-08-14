@@ -152,6 +152,10 @@ Read [this article](https://help.github.com/en/articles/creating-a-personal-acce
 ### Slack Token
 Read [this article](https://api.slack.com/start/overview#creating) to create and set up your Slack app and generate your token. The permissions necessary are `chat:write:bot`, `users:read`, `users:read.email`, and `users.profile:read`. Once you have your token generated, add it to the environment variable `SLACK_API_TOKEN`
 
+### (Optional) Jira User and Password
+By enabling the setting `use_jira` in your config file and having the variables `JIRA_USER` and `JIRA_PASS` set, the OctoNag will attempt to find the Jira tickets associated with the PRs that it would typically notify users about (this works for PRs with titles formatted like `JIRA-1234: Details of PR`). If a PR is matched to a Jira ticket, notifications will only be sent if the ticket is in the `Review` state. If either of `JIRA_USER` or `JIRA_PASSWORD` are unset, then the Octonag will not connect to Jira and notifications will be sent for all appropriate PRs. This is useful when the QA process for your team occurs before the ticket gets merged, allowing developers to stay nag-free while the tickets are not yet ready to be merged.
+
+
 
 ## Automation
 

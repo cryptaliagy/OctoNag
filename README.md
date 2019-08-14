@@ -20,6 +20,7 @@ For a more detailed guide on how to start up and configure your OctoNag instance
 
 ## Configuration
 1. Make sure that SLACK_API_TOKEN and GITHUB_API_TOKEN are set as environment variables
+1. (Optional) set JIRA_USER and JIRA_PASS as environment variables to mute notifications for pull requests that can be linked to Jira tickets in states other than `REVIEW`.
 1. Add organizations & repositories to watch onto your conf/config.yaml file
 1. Add your team members to the whitelist. It is highly recommended that you add your teammates to the whitelist to make sure that if anyone else is also contributing to the repo, they will not get unexpected nags.
 1. If necessary (i.e. when members are on PTO/out sick/should not be nagged), add team members to the blacklist
