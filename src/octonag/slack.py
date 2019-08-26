@@ -15,6 +15,8 @@ LOOKUP_USER_URL = 'https://slack.com/api/users.lookupByEmail'
 @restrict('whitelist')
 @manually_resolve
 def lookup_user(login, user_email='', name=''):
+    if user_email is None:
+        return None
     if login in found:
         return user_cache[login]['id']
     print('Searching for %s...' % login)

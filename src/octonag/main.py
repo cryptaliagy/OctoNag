@@ -22,8 +22,15 @@ def process(pr_data):
     '''
 
     author_login = pr_data['author']['login']
-    author_email = pr_data['author']['email']
-    author_name = pr_data['author']['name']
+    if 'email' in pr_data['author']:
+        author_email = pr_data['author']['email']
+    else:
+        author_email = None
+
+    if 'name' in pr_data['author']:
+        author_name = pr_data['author']['name']
+    else:
+        author_name = author_login
     url = pr_data['url']
     title = pr_data['title']
     assignees = pr_data['assignees']['nodes']
