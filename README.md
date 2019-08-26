@@ -39,7 +39,7 @@ For a more detailed guide on how to start up and configure your OctoNag instance
 ```
 3. Install the OctoNag
 ```bash
-    ./instal    # Installs the octonag & the pre-commit hooks
+    ./install    # Installs the octonag & the pre-commit hooks
 ```
 You can now run the OctoNag by using:
 ```bash
