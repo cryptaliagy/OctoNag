@@ -14,14 +14,14 @@
           login
         }}
       }}
-      assignees(first: 100) {{
+      assignees(first: 10) {{
         nodes {{
           login
           name
           email
         }}
       }}
-      reviewRequests(first: 100) {{
+      reviewRequests(first: 10) {{
         nodes {{
           requestedReviewer {{
             ... on User {{
@@ -32,7 +32,7 @@
           }}
         }}
       }}
-      reviews(last: 100, states: [CHANGES_REQUESTED, APPROVED]) {{
+      reviews(last: 50, states: [CHANGES_REQUESTED, APPROVED]) {{
         nodes {{
           state
         }}
