@@ -4,6 +4,7 @@
       number
       title
       url
+      isDraft
       author {{
         ... on User {{
           login

@@ -22,7 +22,10 @@ def build_query(repositories=None, base_query=get_base_query_from_file('conf/bas
 
 @with_token(service='Github')
 def run_query(query, _token):
-    headers = {'Authorization': f'Bearer {_token}'}
+    headers = {
+        'Authorization': f'Bearer {_token}',
+        'Accept': 'application/vnd.github.shadow-cat-preview+json'
+    }
     result = requests.post(url, json={'query': query}, headers=headers)
     if result.status_code == 200:
         return result.json()

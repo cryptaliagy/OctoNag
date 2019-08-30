@@ -20,6 +20,8 @@ def process(pr_data):
     Returns a list of tuples containing a set of targets and a message
     for the targets
     '''
+    if pr_data['isDraft'] is True:
+        return None  # Do not check for empty PRs
 
     author_login = pr_data['author']['login']
     author_email = pr_data['author'].get('email', None)
@@ -143,7 +145,8 @@ def main():
                 if review_status is False:  # Don't skip if returns None
                     continue
             targets = process(pull_request)
-            msg_queue.extend(targets)
+            if targets is not None:
+                msg_queue.extend(targets)
 
     unique_nags, total_nags = msg_all_enqueued(msg_queue)
     print('OctoNag has finished nagging for the day!')
