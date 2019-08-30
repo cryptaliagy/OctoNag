@@ -1,6 +1,7 @@
 # Entries are of the form
 # Organization:
 #   - Repository
+# NOTE: THE MAXIMUM NUMBER OF REPOSITORIES THAT CAN BE QUERIED IS 70.
 repositories:
 
 # Restrict notifications to only be given to these Github users, or leave empty to notify any users
