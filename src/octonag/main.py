@@ -89,11 +89,12 @@ def get_user_ids(users_list):
     for user in users_list:
         if 'requestedReviewer' in user:
             user = user['requestedReviewer']
-
-        login = user['login']
-        email = user['email']
-        name = user['name']
-        uid = lookup_user(login, email, name)
+        uid = None
+        if user is not None:
+            login = user['login']
+            email = user['email']
+            name = user['name']
+            uid = lookup_user(login, email, name)
         if uid is not None:
             result.add(lookup_user(login, email, name))
     return result
