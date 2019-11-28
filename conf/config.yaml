@@ -20,3 +20,6 @@ ignore_no_assigned: False
 
 # Set this to 'True' if you would like to ignore no requested users to a PR warnings
 ignore_no_requested: False
+
+# Set this to 'False' to disable the greeting/goodbye message from OctoNag
+send_greeting: True

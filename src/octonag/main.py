@@ -11,6 +11,7 @@ from .jira_status import in_review
 from .configuration import use_jira
 from .configuration import ignore_requested
 from .configuration import ignore_assigned
+from .configuration import send_greeting
 from collections import deque
 from pprint import pprint
 from functools import partial
@@ -117,7 +118,7 @@ def msg_all_enqueued(msg_queue):
         targets, message = msg_queue.popleft()
 
         for target in targets:
-            if target not in messaged:
+            if target not in messaged and send_greeting:
                 name = get_name_from_id(target)
                 greeting = greet(name)
                 msg_user(target, greeting)
@@ -125,8 +126,9 @@ def msg_all_enqueued(msg_queue):
             msg_user(target, message)
             total += 1
 
-    for user in messaged:
-        msg_user(user, goodbye)
+    if send_greeting:
+        for user in messaged:
+            msg_user(user, goodbye)
 
     return messaged, total
 

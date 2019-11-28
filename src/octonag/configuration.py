@@ -39,6 +39,7 @@ class _config:
         self.use_jira = configs['use_jira']
         self.ignore_assigned = configs['ignore_no_assigned']
         self.ignore_requested = configs['ignore_no_requested']
+        self.send_greeting = configs['send_greeting']
 
 
 Configuration = _config()
@@ -50,6 +51,7 @@ mapped = set()
 use_jira = Configuration.use_jira
 ignore_requested = Configuration.ignore_requested
 ignore_assigned = Configuration.ignore_assigned
+send_greeting = Configuration.send_greeting
 
 
 def repository_generator(repos=None):
