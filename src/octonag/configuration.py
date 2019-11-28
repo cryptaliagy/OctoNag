@@ -37,6 +37,8 @@ class _config:
         self.whitelist = configs['whitelist'] and {*configs['whitelist']}
         self.blacklist = configs['blacklist'] and {*configs['blacklist']}
         self.use_jira = configs['use_jira']
+        self.ignore_assigned = configs['ignore_no_assigned']
+        self.ignore_requested = configs['ignore_no_requested']
 
 
 Configuration = _config()
@@ -46,6 +48,8 @@ github_graphql = f'{github_url}/api/graphql'
 blocked = set()
 mapped = set()
 use_jira = Configuration.use_jira
+ignore_requested = Configuration.ignore_requested
+ignore_assigned = Configuration.ignore_assigned
 
 
 def repository_generator(repos=None):

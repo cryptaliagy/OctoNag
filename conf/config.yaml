@@ -14,3 +14,9 @@ blacklist:
 manually_resolve_users:
 
 use_jira: False
+
+# Set this to 'True' if you would like to ignore no assigned users to a PR warnings
+ignore_no_assigned: False
+
+# Set this to 'True' if you would like to ignore no requested users to a PR warnings
+ignore_no_requested: False

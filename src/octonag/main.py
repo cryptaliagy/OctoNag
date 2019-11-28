@@ -9,6 +9,8 @@ from .slack import msg_user
 from .slack import get_name_from_id
 from .jira_status import in_review
 from .configuration import use_jira
+from .configuration import ignore_requested
+from .configuration import ignore_assigned
 from collections import deque
 from pprint import pprint
 from functools import partial
@@ -67,16 +69,18 @@ def process(pr_data):
                 requested_msg = assigned(review_request=True)
                 result.append((requested_target, requested_msg))
     else:
-        if len(assignee_ids) > 0:
+        if len(assignee_ids) > 0 and not ignore_requested:
             msg = assigned()
             result.append((assignee_ids, msg))
 
-        if len(reviewer_ids) > 0:
+        if len(reviewer_ids) > 0 and not ignore_assigned:
             msg = assigned(review_request=True)
             only_requested = reviewer_ids - assignee_ids
             result.append((only_requested, msg))
 
-        if len(assignees) == 0 and len(reviewers) == 0 and author_id is not None:
+        if len(assignees) == 0 and len(reviewers) == 0 and \
+            author_id is not None and not ignore_requested and \
+                not ignore_assigned:
             target = {author_id}
             msg = reviewed(has_reviewers_assigned=False)
             result.append((target, msg))
