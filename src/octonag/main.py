@@ -9,10 +9,14 @@ from .slack import msg_user
 from .slack import get_name_from_id
 from .jira_status import in_review
 from .configuration import use_jira
+from .configuration import ignore_requested
+from .configuration import ignore_assigned
+from .configuration import send_greeting
 from collections import deque
 from pprint import pprint
 from functools import partial
 from functools import reduce
+import logging
 
 
 def process(pr_data):
@@ -20,10 +24,13 @@ def process(pr_data):
     Returns a list of tuples containing a set of targets and a message
     for the targets
     '''
+    if pr_data['isDraft'] is True:
+        logging.debug('PR has isDraft property, skipping')
+        return None  # Do not check for empty PRs
 
     author_login = pr_data['author']['login']
-    author_email = pr_data['author']['email']
-    author_name = pr_data['author']['name']
+    author_email = pr_data['author'].get('email', None)
+    author_name = pr_data['author'].get('name', author_login)
     url = pr_data['url']
     title = pr_data['title']
     assignees = pr_data['assignees']['nodes']
@@ -65,16 +72,18 @@ def process(pr_data):
                 requested_msg = assigned(review_request=True)
                 result.append((requested_target, requested_msg))
     else:
-        if len(assignee_ids) > 0:
+        if len(assignee_ids) > 0 and not ignore_requested:
             msg = assigned()
             result.append((assignee_ids, msg))
 
-        if len(reviewer_ids) > 0:
+        if len(reviewer_ids) > 0 and not ignore_assigned:
             msg = assigned(review_request=True)
             only_requested = reviewer_ids - assignee_ids
             result.append((only_requested, msg))
 
-        if len(assignees) == 0 and len(reviewers) == 0 and author_id is not None:
+        if len(assignees) == 0 and len(reviewers) == 0 and \
+            author_id is not None and not ignore_requested and \
+                not ignore_assigned:
             target = {author_id}
             msg = reviewed(has_reviewers_assigned=False)
             result.append((target, msg))
@@ -87,11 +96,12 @@ def get_user_ids(users_list):
     for user in users_list:
         if 'requestedReviewer' in user:
             user = user['requestedReviewer']
-
-        login = user['login']
-        email = user['email']
-        name = user['name']
-        uid = lookup_user(login, email, name)
+        uid = None
+        if user is not None:
+            login = user['login']
+            email = user['email']
+            name = user['name']
+            uid = lookup_user(login, email, name)
         if uid is not None:
             result.add(lookup_user(login, email, name))
     return result
@@ -110,7 +120,7 @@ def msg_all_enqueued(msg_queue):
         targets, message = msg_queue.popleft()
 
         for target in targets:
-            if target not in messaged:
+            if target not in messaged and send_greeting:
                 name = get_name_from_id(target)
                 greeting = greet(name)
                 msg_user(target, greeting)
@@ -118,19 +128,23 @@ def msg_all_enqueued(msg_queue):
             msg_user(target, message)
             total += 1
 
-    for user in messaged:
-        msg_user(user, goodbye)
+    if send_greeting:
+        for user in messaged:
+            msg_user(user, goodbye)
 
     return messaged, total
 
 
 def main():
     msg_queue = deque()
+    logging.debug('Building query...')
     query = build_query()
+    logging.debug('Running query...')
     result = run_query(query)
 
     if 'errors' in result:
         pprint(result)
+        logging.critical('Found error while running query')
         raise Exception('Something went wrong with the query')
 
     result = result['data']
@@ -143,12 +157,13 @@ def main():
                 if review_status is False:  # Don't skip if returns None
                     continue
             targets = process(pull_request)
-            msg_queue.extend(targets)
+            if targets is not None:
+                msg_queue.extend(targets)
 
     unique_nags, total_nags = msg_all_enqueued(msg_queue)
-    print('OctoNag has finished nagging for the day!')
-    print('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))
-    print('Nagged people:', *map(get_name_from_id, unique_nags))
+    logging.info('OctoNag has finished nagging for the day!')
+    logging.info('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))
+    logging.info(f'Nagged people: {", ".join(map(get_name_from_id, unique_nags))}')
 
 
 if __name__ == "__main__":
