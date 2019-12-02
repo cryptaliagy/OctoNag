@@ -1,7 +1,7 @@
 # OctoNag Bot
 
 ## Build Status
-![](https://github.com/actions/hello-world/workflows/Flake8/badge.svg?branch=master)
+![Flake8](https://github.com/actions/hello-world/workflows/Flake8/badge.svg?branch=master)
 
 
 ## Quickjump
