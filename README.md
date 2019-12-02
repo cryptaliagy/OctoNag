@@ -3,7 +3,6 @@
 ## Build Status
 ![Flake8](https://github.com/taliamax/OctoNag/workflows/Flake8/badge.svg)
 
-
 ## Quickjump
 1. [Onboarding](#onboarding)
 1. [Configuration](#configuration)
