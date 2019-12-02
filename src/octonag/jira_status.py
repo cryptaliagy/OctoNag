@@ -1,9 +1,8 @@
 from .configuration import with_credentials
+from .configuration import jira_url
 from jira import JIRA
 from jira.exceptions import JIRAError
 import logging
-
-jira_url = 'https://jira.surveymonkey.com'
 
 
 @with_credentials(service='Jira')

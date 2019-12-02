@@ -8,7 +8,6 @@
 1. [Personal Access Tokens](#personal-access-tokens)
     1. [Github Token](#github-token)
     1. [Slack Token](#slack-token)
-1. [Automation](#automation)
 
 
 ## Getting Started – Why should I care?
@@ -139,8 +138,6 @@ manually_resolve_users:
 use_jira: False
 ```
 
-> *Note*: This tutorial does not cover JIRA integration. For more information on what this does, please read the [JIRA](JIRA.md) doc
-
 
 ## Personal Access Tokens
 
@@ -154,13 +151,3 @@ Read [this article](https://api.slack.com/start/overview#creating) to create and
 
 ### (Optional) Jira User and Password
 By enabling the setting `use_jira` in your config file and having the variables `JIRA_USER` and `JIRA_PASS` set, the OctoNag will attempt to find the Jira tickets associated with the PRs that it would typically notify users about (this works for PRs with titles formatted like `JIRA-1234: Details of PR`). If a PR is matched to a Jira ticket, notifications will only be sent if the ticket is in the `Review` state. If either of `JIRA_USER` or `JIRA_PASSWORD` are unset, then the Octonag will not connect to Jira and notifications will be sent for all appropriate PRs. This is useful when the QA process for your team occurs before the ticket gets merged, allowing developers to stay nag-free while the tickets are not yet ready to be merged.
-
-
-
-## Automation
-
-For my team, I would like notifications to happen once a day, in the morning, so my teammates and I can have a morning digest of what pull requests we need to tackle. Since we are all based in Ottawa, all I have to do is use the existing automation process available through TeamCity by using a special name for my branch!
-
-To allow my team to use the automation I simply rename my branch from `octonag-team` to `est-octonag-team`. Now, at 8 AM EST, my image will be built and the OctoNag will notify my teammates of our open pull requests! If we were all based in San Mateo instead, I could rename my branch `pst-octonag-team`, and the image would instead be built at 8 AM PST instead.
-
-> For a more in-depth guide at automation, read the [automation doc](Automation.md).
