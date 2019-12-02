@@ -23,3 +23,6 @@ ignore_no_requested: False
 
 # Set this to 'False' to disable the greeting/goodbye message from OctoNag
 send_greeting: True
+
+# Set this to enable searching under a default company domain when no email is available. Necessary.
+default_email_domain: 

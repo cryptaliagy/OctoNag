@@ -45,11 +45,13 @@ class _config:
         self.ignore_assigned = configs['ignore_no_assigned']
         self.ignore_requested = configs['ignore_no_requested']
         self.send_greeting = configs['send_greeting']
+        self.debug_uid = os.getenv('DEBUG_UID')
+        self.default_email_domain = configs['default_email_domain']
 
 
 Configuration = _config()
 organizations = Configuration.repositories.keys()
-github_url = 'https://code.corp.surveymonkey.com'
+github_url = os.getenv('GITHUB_URL')
 github_graphql = f'{github_url}/api/graphql'
 blocked = set()
 mapped = set()
@@ -57,6 +59,8 @@ use_jira = Configuration.use_jira
 ignore_requested = Configuration.ignore_requested
 ignore_assigned = Configuration.ignore_assigned
 send_greeting = Configuration.send_greeting
+jira_url = os.getenv('JIRA_URL')
+default_email_domain = Configuration.default_email_domain
 
 
 def repository_generator(repos=None):
@@ -165,5 +169,5 @@ def get_slack_token():
 def debug(func):
     @wraps(func)
     def wrapper(uid, *args, **kwargs):
-        return func('UJJJKJZEF', *args, **kwargs)
+        return func(Configuration.debug_uid, *args, **kwargs)
     return wrapper

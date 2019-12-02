@@ -3,6 +3,7 @@ import logging
 from .configuration import restrict
 from .configuration import get_slack_token
 from .configuration import manually_resolve
+from .configuration import default_email_domain
 # from .configuration import debug
 
 user_cache = {}
@@ -30,8 +31,8 @@ def lookup_user(login, user_email='', name=''):
         return user_cache[login]['id']
     elif user_email != '':
         email = user_email
-    else:
-        email = login + '@surveymonkey.com'
+    elif default_email_domain:
+        email = login + default_email_domain
 
     try:
         r = client.users_lookupByEmail(
