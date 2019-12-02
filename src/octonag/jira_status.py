@@ -1,6 +1,7 @@
 from .configuration import with_credentials
 from jira import JIRA
 from jira.exceptions import JIRAError
+import logging
 
 jira_url = 'https://jira.surveymonkey.com'
 
@@ -8,7 +9,7 @@ jira_url = 'https://jira.surveymonkey.com'
 @with_credentials(service='Jira')
 def in_review(issue_id, _usr, _pwd):
     if _usr is None or _pwd is None:
-        print('Jira username or password unset.')
+        logging.error('Jira username or password unset.')
         return None
     jira = None
     try:

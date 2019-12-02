@@ -1,19 +1,24 @@
 import sys
 import os
+import logging
 from yaml import load, Loader
 from functools import wraps
+
+
+logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.WARNING)
 
 
 def get_config_from_file(config_file='conf/config.yaml'):
     """
     Grabs the configuration from YAML file
     """
+    logging.debug("Attempting to read configuration file %s", config_file)
     with open(config_file, 'r') as f:
         try:
             config = load(f.read(), Loader=Loader)
         except Exception as e:
-            sys.stderr.write(e)
-            sys.stderr.write("Error reading configuration file {}".format(config_file))
+            logging.critical(e)
+            logging.critical("Error reading configuration file {}".format(config_file))
             sys.exit(1)
     return config
 
@@ -24,12 +29,12 @@ class _config:
         self.github_token = os.getenv('GITHUB_API_TOKEN')
         self.slack_token = os.getenv('SLACK_API_TOKEN')
         if configs['use_jira']:
+            logging.debug("Using JIRA credentials")
             self.jira_user = os.getenv('JIRA_USER')
             self.jira_pass = os.getenv('JIRA_PASS')
 
         if (self.slack_token is None or self.github_token is None):
-            sys.stderr.write('Please ensure that the github token and '
-                             'slack token are defined in the config file')
+            logging.critical('Slack or Github tokens not configured')
             sys.exit(1)
 
         self.map_users = configs['manually_resolve_users']
@@ -81,7 +86,7 @@ def restrict(list_type):
 
             if collection and ((list_type == 'whitelist') ^ (name in collection)):
                 modifier_word = 'not' if list_type == 'whitelist' else ''
-                print('User %s %s in %s, blocking lookup' % (name, modifier_word, list_type))
+                logging.info('User %s %s in %s, blocking lookup' % (name, modifier_word, list_type))
                 blocked.add(name)
                 return None
 
@@ -151,6 +156,10 @@ def get_header(service):
         return {'Authorization': f'Bearer {_token}'}
 
     return make_header()
+
+
+def get_slack_token():
+    return Configuration.slack_token
 
 
 def debug(func):

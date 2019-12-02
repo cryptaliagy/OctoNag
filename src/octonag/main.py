@@ -16,6 +16,7 @@ from collections import deque
 from pprint import pprint
 from functools import partial
 from functools import reduce
+import logging
 
 
 def process(pr_data):
@@ -24,6 +25,7 @@ def process(pr_data):
     for the targets
     '''
     if pr_data['isDraft'] is True:
+        logging.debug('PR has isDraft property, skipping')
         return None  # Do not check for empty PRs
 
     author_login = pr_data['author']['login']
@@ -135,11 +137,14 @@ def msg_all_enqueued(msg_queue):
 
 def main():
     msg_queue = deque()
+    logging.debug('Building query...')
     query = build_query()
+    logging.debug('Running query...')
     result = run_query(query)
 
     if 'errors' in result:
         pprint(result)
+        logging.critical('Found error while running query')
         raise Exception('Something went wrong with the query')
 
     result = result['data']
@@ -156,9 +161,9 @@ def main():
                 msg_queue.extend(targets)
 
     unique_nags, total_nags = msg_all_enqueued(msg_queue)
-    print('OctoNag has finished nagging for the day!')
-    print('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))
-    print('Nagged people:', *map(get_name_from_id, unique_nags))
+    logging.info('OctoNag has finished nagging for the day!')
+    logging.info('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))
+    logging.info(f'Nagged people: {", ".join(map(get_name_from_id, unique_nags))}')
 
 
 if __name__ == "__main__":
