@@ -103,7 +103,7 @@ def get_user_ids(users_list):
             name = user['name']
             uid = lookup_user(login, email, name)
         if uid is not None:
-            result.add(lookup_user(login, email, name))
+            result.add(uid)
     return result
 
 
@@ -120,9 +120,10 @@ def msg_all_enqueued(msg_queue):
         targets, message = msg_queue.popleft()
 
         for target in targets:
-            if target not in messaged and send_greeting:
+            if target not in messaged:
                 name = get_name_from_id(target)
-                greeting = greet(name)
+                if send_greeting:
+                    greeting = greet(name)
                 msg_user(target, greeting)
                 messaged.add(target)
             msg_user(target, message)
