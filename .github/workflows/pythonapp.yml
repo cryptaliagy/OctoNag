@@ -28,6 +28,8 @@ jobs:
       env:
         GITHUB_API_TOKEN: ${{secrets.GITHUB_API_TOKEN}}
         SLACK_API_TOKEN: ${{secrets.SLACK_API_TOKEN}}
+        COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
       run: |
-        pip install pytest
-        pytest test/
+        pip install pytest pytest-cov python-coveralls
+        pytest --cov=src/octonag --cov-report term-missing -v test/
+        coveralls
