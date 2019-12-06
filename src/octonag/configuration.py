@@ -50,7 +50,7 @@ class _config:
 
 
 Configuration = _config()
-organizations = Configuration.repositories.keys()
+organizations = Configuration.repositories and Configuration.repositories.keys()
 github_url = os.getenv('GITHUB_URL')
 github_graphql = f'{github_url}/api/graphql'
 blocked = set()
