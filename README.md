@@ -1,7 +1,7 @@
 # OctoNag Bot
 
 ## Build Status
-![Pytest](https://github.com/taliamax/OctoNag/workflows/Pytest/badge.svg)
+![Pytest](https://github.com/taliamax/OctoNag/workflows/Pytest/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/taliamax/OctoNag/badge.svg?branch=HEAD)](https://coveralls.io/github/taliamax/OctoNag?branch=HEAD)
 
 ## Quickjump
 1. [Onboarding](#onboarding)
