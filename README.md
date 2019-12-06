@@ -1,7 +1,7 @@
 # OctoNag Bot
 
 ## Build Status
-![Flake8](https://github.com/taliamax/OctoNag/workflows/Flake8/badge.svg)
+![Pytest](https://github.com/taliamax/OctoNag/workflows/Pytest/badge.svg)
 
 ## Quickjump
 1. [Onboarding](#onboarding)
