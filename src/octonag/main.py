@@ -13,7 +13,6 @@ from .configuration import ignore_requested
 from .configuration import ignore_assigned
 from .configuration import send_greeting
 from collections import deque
-from pprint import pprint
 from functools import partial
 from functools import reduce
 import logging
@@ -52,6 +51,8 @@ def process(pr_data):
     if len(review_states) > 0:
         state = \
             reduce(state_reducer, review_states, review_states[0]['state'])
+
+        logging.debug(f'State of PR {title} is {state}')
 
         if state == 'CHANGES_REQUESTED' and author_id is not None:
             target = {author_id}
@@ -144,7 +145,7 @@ def main():
     result = run_query(query)
 
     if 'errors' in result:
-        pprint(result)
+        logging.debug(result)
         logging.critical('Found error while running query')
         raise Exception('Something went wrong with the query')
 
@@ -153,14 +154,16 @@ def main():
     for key in result:
         pull_requests = result[key]['pullRequests']['nodes']
         for pull_request in pull_requests:
+            logging.debug(f"Starting work on pull request with title {pull_request['title']}")
             if use_jira:
                 review_status = in_review(pull_request['branch'])
                 if review_status is False:  # Don't skip if returns None
+                    logging.debug(f'JIRA Review status is {review_status}')
                     continue
             targets = process(pull_request)
             if targets is not None:
+                logging.debug(targets)
                 msg_queue.extend(targets)
-
     unique_nags, total_nags = msg_all_enqueued(msg_queue)
     logging.info('OctoNag has finished nagging for the day!')
     logging.info('Sent %d nags to a total of %d people' % (total_nags, len(unique_nags)))

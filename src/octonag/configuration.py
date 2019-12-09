@@ -5,7 +5,7 @@ from yaml import load, Loader
 from functools import wraps
 
 
-logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.WARNING)
+logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.DEBUG)
 
 
 def get_config_from_file(config_file='conf/config.yaml'):
@@ -147,7 +147,7 @@ def manually_resolve(func):
 
         if Configuration.map_users and name in Configuration.map_users:
             mapped_name = Configuration.map_users[name]
-            print(f'{name} in manual mapping configuration, doing lookup on {mapped_name}')
+            logging.info(f'{name} in manual mapping configuration, doing lookup on {mapped_name}')
             mapped.add(name)
             return func(mapped_name, *args, **kwargs)
         return func(name, *args, **kwargs)

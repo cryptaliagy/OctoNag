@@ -5,6 +5,8 @@ from octonag.main import get_user_ids
 from octonag.main import process
 from octonag.messages import was_assigned
 from octonag.messages import review_made
+from octonag.main import main
+from collections import deque
 import logging
 
 log = logging.getLogger(__file__)
@@ -73,6 +75,7 @@ def build_pr_data(is_draft=False, final_state=None,
                   ):
     return {
         'isDraft': is_draft,
+        'branch': 'some_branch',
         'author': {
             'login': 'stevestevenson',
             'email': 'author@email.com',
@@ -181,3 +184,58 @@ def test_process(pr_data_schema, expected_return):
         assert len(result) == len(expected_return)
         for r, e in zip(result, expected_return):
             assert r == e
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize('use_jira', [
+    (False),
+    (True)
+])
+@patch('octonag.main.in_review')
+@patch('octonag.main.get_name_from_id')
+@patch('octonag.main.msg_all_enqueued')
+@patch('octonag.main.run_query')
+@patch('octonag.main.build_query')
+def test_main(mock_build, mock_run, mock_msg, mock_translate, mock_review, use_jira):
+    import octonag.main
+    import octonag.configuration
+    mock_build.return_value = ""
+    mock_run.return_value = {
+        'errors': 'Some nonsense Errors'
+    }
+    octonag.main.use_jira = use_jira
+    octonag.configuration.Configuration.whitelist = None
+    has_errored = False
+    mock_review.return_value = False
+
+    try:
+        main()
+    except Exception:
+        has_errored = True
+
+    assert has_errored
+
+    mock_run.return_value = {
+        'data': {
+            'someOrg': {
+                'pullRequests': {
+                    'nodes': [
+                        build_pr_data()
+                    ]
+                }
+            }
+        }
+    }
+    mock_translate.side_effect = lambda x: '1234'
+    mock_msg.return_value = ({'abcde'}, 1)
+
+    with patch('octonag.main.lookup_user') as lookup_user:
+        lookup_user.side_effect = lookup_user_mock
+
+        main()
+    if not use_jira:
+        queue = deque()
+        queue.extend([({author_uid}, reviewed(has_reviewers_assigned=False))])
+        mock_msg.assert_called_with(queue)
+    else:
+        mock_msg.assert_called_with(deque())
