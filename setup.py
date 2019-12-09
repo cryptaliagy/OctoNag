@@ -12,9 +12,9 @@ requirements = requirements.split("\n")
 
 setup(
     name='octonag',
-    version="2.0.0",
+    version="2.1.0",
     author='Natalia Maximo',
-    email='iam@natalia.dev',
+    author_email='iam@natalia.dev',
     description='A slack bot to remind developers of open PRs',
     long_description=long_description,
     long_description_content_type='text/markdown',
