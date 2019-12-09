@@ -5,7 +5,7 @@ from yaml import load, Loader
 from functools import wraps
 
 
-logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.DEBUG)
+logging.basicConfig(format="[%(levelname)s] %(message)s", level=logging.WARNING)
 
 
 def get_config_from_file(config_file='conf/config.yaml'):
