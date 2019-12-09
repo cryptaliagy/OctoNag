@@ -52,7 +52,7 @@ The OctoNag comes with the following handy make commands for Docker usage. They 
 ```bash
 make build      # Builds the image
 make run        # Runs the OctoNag
-make test       # Runs the OctoNag tests (currently only flake8)
+make test       # Runs the OctoNag tests
 make teardown   # Deletes the image
 make rebuild    # Tears down, then builds the image
 make activate   # Tears down image if existing, builds it, runs, then cleans up

@@ -28,4 +28,4 @@ activate:
 test:
 	docker-compose \
 		-f devstack/docker-compose.yml \
-		run octonag bash -c "flake8"
+		run octonag bash -c "flake8 ; pip install pytest pytest-cov && pytest -v test/"
