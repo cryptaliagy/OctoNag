@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  octo_nag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${TARGET:-dev}
+    image: octo_nag

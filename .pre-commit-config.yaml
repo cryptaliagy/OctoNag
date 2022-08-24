@@ -1,4 +1,25 @@
--   repo: https://gitlab.com/pycqa/flake8
-    rev: '3.7.8'  # pick a git hash / tag to point to
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0  # Use the ref you want to point at
     hooks:
-    -   id: flake8
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-toml
+    - id: check-yaml
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: forbid-new-submodules
+    - id: mixed-line-ending
+      args:
+        - "--fix=lf"
+    - id: no-commit-to-branch
+      args: [--branch, main]
+    - id: trailing-whitespace
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: 'eeee35a89e69d5772bdee97db1a6a898467b686e'
+    hooks:
+    -   id: fmt
+    -   id: cargo-check

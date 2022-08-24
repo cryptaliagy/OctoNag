@@ -1,0 +1,19 @@
+name: build and test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: rust:alpine
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Install musl dependency
+      run: apk add musl-dev
+
+    - name: Build the package
+      run: cargo build
+
+    - name: Runs the tests
+      run: cargo test
