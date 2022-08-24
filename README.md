@@ -1,5 +1,7 @@
 # OctoNag Bot
 
+THIS PROJECT IS ARCHIVED AND NO LONGER MAINTAINED. I am currently working on a re-write of it in Rust, you can find it here -> https://github.com/taliamax/octo_nag
+
 ## Build Status
 ![Pytest](https://github.com/taliamax/OctoNag/workflows/Pytest/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/taliamax/OctoNag/badge.svg?branch=develop)](https://coveralls.io/github/taliamax/OctoNag?branch=develop)
 
