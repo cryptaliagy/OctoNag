@@ -1,5 +1,7 @@
 # OctoNag Bot
 
+THIS PROJECT IS ARCHIVED AND NO LONGER MAINTAINED. I am currently working on a re-write of it in Rust, you can find it here -> https://github.com/taliamax/octo_nag
+
 ## Build Status
 ![Flake8](https://github.com/taliamax/OctoNag/workflows/Flake8/badge.svg)
 
